@@ -1,0 +1,45 @@
+import json
+from collections import defaultdict
+
+def calculate_h_index(citations):
+    citations.sort(reverse=True)
+    h_index = 0
+    for i, c in enumerate(citations):
+        if c >= i + 1:
+            h_index = i + 1
+        else:
+            break
+    return h_index
+
+def getInputAPI():
+    numPapers = int(input().strip())  # Lee el número de artículos
+    papers = [input().strip() for _ in range(numPapers)]  # Lee cada artículo en formato JSON
+    return papers
+
+def main():
+    try:
+        articles_json = getInputAPI()
+        articles = [json.loads(article) for article in articles_json]
+    except (json.JSONDecodeError, ValueError):
+        print("Error: Formato de entrada inválido.")
+        return
+    
+    author_citations = defaultdict(list)
+    
+    for article in articles:
+        authors = article.get('authors', {}).get('authors', [])
+        citations = article.get('citing_paper_count', 0)
+        for author in authors:
+            author_citations[author.get('full_name', '')].append(citations)
+    
+    author_h_index = {}
+    for author, citations in author_citations.items():
+        author_h_index[author] = calculate_h_index(citations)
+    
+    sorted_authors = sorted(author_h_index.items(), key=lambda x: (-x[1], x[0]))
+    
+    for author, h_index in sorted_authors:
+        print(f"{author} {h_index}")
+
+if _name_ == "_main_":
+    main()

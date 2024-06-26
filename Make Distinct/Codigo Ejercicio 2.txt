@@ -1,0 +1,27 @@
+def min_operations_to_make_distinct(n, arr):
+    used = set()
+    operations = 0
+
+    for num in arr:
+        if num in used:
+            steps = 1
+            while True:
+                if num + steps not in used:
+                    used.add(num + steps)
+                    operations += steps
+                    break
+                if num - steps not in used:
+                    used.add(num - steps)
+                    operations += steps
+                    break
+                steps += 1
+        else:
+            used.add(num)
+
+    return operations
+
+n = int(input())
+arr = list(map(int, input().split()))
+
+result = min_operations_to_make_distinct(n, arr)
+print(result)

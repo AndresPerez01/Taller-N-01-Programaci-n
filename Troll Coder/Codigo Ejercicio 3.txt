@@ -1,0 +1,43 @@
+import sys
+
+def flush():
+    """ Flushes the output buffer. """
+    sys.stdout.flush()
+
+def query(sequence):
+    """ Sends a query to the Troll and receives the number of correct bits. """
+    print(f"Q {' '.join(sequence)}")
+    flush()
+    correct_bits = int(input().strip())
+    return correct_bits
+
+def solve():
+    """ Main solving function. """
+    # Read the length of the sequence from the Troll
+    try:
+        N = int(input().strip())
+    except EOFError:
+        return
+    
+    # Initial guess: all zeros
+    sequence = ['0'] * N
+    correct_bits = query(sequence)
+    
+    # Find the correct bits one by one
+    for i in range(N):
+        sequence[i] = '1'
+        new_correct_bits = query(sequence)
+        
+        if new_correct_bits <= correct_bits:
+            # If changing the bit didn't increase the number of correct bits, revert it back to '0'
+            sequence[i] = '0'
+        else:
+            # Otherwise, the change was correct
+            correct_bits = new_correct_bits
+    
+    # Output the final answer
+    print(f"A {' '.join(sequence)}")
+    flush()
+
+if _name_ == "_main_":
+    solve()
